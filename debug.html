@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Mochi Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .debug-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-left: 4px solid #007cba;
+        }
+        .error {
+            border-left-color: #dc3232;
+            background: #fef7f7;
+        }
+        .success {
+            border-left-color: #46b450;
+            background: #f7fef7;
+        }
+        button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #005a87;
+        }
+        .danger {
+            background: #dc3232;
+        }
+        .danger:hover {
+            background: #a00;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Debug Panel - Mochi Website</h1>
+    
+    <div class="debug-section">
+        <h2>📊 Status Sistem</h2>
+        <div id="systemStatus"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🔐 Status Autentikasi</h2>
+        <div id="authStatus"></div>
+        <button onclick="checkAuth()">Refresh Auth Status</button>
+        <button onclick="clearAuth()" class="danger">Clear Auth Data</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🛒 Status Keranjang</h2>
+        <div id="cartStatus"></div>
+        <button onclick="checkCart()">Refresh Cart Status</button>
+        <button onclick="clearCart()" class="danger">Clear Cart Data</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🧹 Maintenance</h2>
+        <button onclick="cleanupData()">Cleanup Corrupted Data</button>
+        <button onclick="clearAllData()" class="danger">Clear All Data</button>
+        <button onclick="testFunctions()">Test Functions</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>📝 Log</h2>
+        <div id="logOutput" style="background: #000; color: #0f0; padding: 10px; border-radius: 4px; font-family: monospace; max-height: 300px; overflow-y: auto;"></div>
+    </div>
+
+    <script>
+        // Debug functions
+        function log(message, type = 'info') {
+            const logOutput = document.getElementById('logOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.style.color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#4CAF50' : '#0f0';
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logOutput.appendChild(logEntry);
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }
+
+        function checkSystemStatus() {
+            const systemStatus = document.getElementById('systemStatus');
+            let html = '';
+            
+            // Check localStorage
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                html += '<div class="debug-item success">✅ localStorage berfungsi</div>';
+            } catch (e) {
+                html += '<div class="debug-item error">❌ localStorage error: ' + e.message + '</div>';
+            }
+            
+            // Check functions
+            if (typeof getCurrentUser === 'function') {
+                html += '<div class="debug-item success">✅ getCurrentUser function tersedia</div>';
+            } else {
+                html += '<div class="debug-item error">❌ getCurrentUser function tidak tersedia</div>';
+            }
+            
+            if (typeof updateAuthUI === 'function') {
+                html += '<div class="debug-item success">✅ updateAuthUI function tersedia</div>';
+            } else {
+                html += '<div class="debug-item error">❌ updateAuthUI function tidak tersedia</div>';
+            }
+            
+            systemStatus.innerHTML = html;
+        }
+
+        function checkAuth() {
+            const authStatus = document.getElementById('authStatus');
+            let html = '';
+            
+            try {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                const isLoggedIn = localStorage.getItem('isLoggedIn');
+                const rememberMe = localStorage.getItem('rememberMe');
+                
+                html += '<div class="debug-item">👤 Current User: ' + (currentUser ? JSON.stringify(currentUser, null, 2) : 'null') + '</div>';
+                html += '<div class="debug-item">🔐 Is Logged In: ' + isLoggedIn + '</div>';
+                html += '<div class="debug-item">💾 Remember Me: ' + rememberMe + '</div>';
+                
+                if (currentUser && isLoggedIn === 'true') {
+                    html += '<div class="debug-item success">✅ User sedang login</div>';
+                } else {
+                    html += '<div class="debug-item">ℹ️ User tidak login</div>';
+                }
+                
+            } catch (e) {
+                html += '<div class="debug-item error">❌ Error checking auth: ' + e.message + '</div>';
+            }
+            
+            authStatus.innerHTML = html;
+            log('Auth status checked');
+        }
+
+        function checkCart() {
+            const cartStatus = document.getElementById('cartStatus');
+            let html = '';
+            
+            try {
+                const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+                const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+                
+                html += '<div class="debug-item">🛒 Cart Items: ' + cartItems.length + '</div>';
+                html += '<div class="debug-item">📦 Total Items: ' + totalItems + '</div>';
+                html += '<div class="debug-item">📋 Cart Data: ' + JSON.stringify(cartItems, null, 2) + '</div>';
+                
+                if (cartItems.length > 0) {
+                    html += '<div class="debug-item success">✅ Keranjang berisi item</div>';
+                } else {
+                    html += '<div class="debug-item">ℹ️ Keranjang kosong</div>';
+                }
+                
+            } catch (e) {
+                html += '<div class="debug-item error">❌ Error checking cart: ' + e.message + '</div>';
+            }
+            
+            cartStatus.innerHTML = html;
+            log('Cart status checked');
+        }
+
+        function clearAuth() {
+            try {
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('rememberMe');
+                log('Auth data cleared', 'success');
+                checkAuth();
+            } catch (e) {
+                log('Error clearing auth: ' + e.message, 'error');
+            }
+        }
+
+        function clearCart() {
+            try {
+                localStorage.removeItem('cartItems');
+                log('Cart data cleared', 'success');
+                checkCart();
+            } catch (e) {
+                log('Error clearing cart: ' + e.message, 'error');
+            }
+        }
+
+        function clearAllData() {
+            try {
+                localStorage.clear();
+                log('All data cleared', 'success');
+                checkAuth();
+                checkCart();
+            } catch (e) {
+                log('Error clearing all data: ' + e.message, 'error');
+            }
+        }
+
+        function cleanupData() {
+            try {
+                // Check if currentUser exists but isLoggedIn is false
+                const currentUser = localStorage.getItem('currentUser');
+                const isLoggedIn = localStorage.getItem('isLoggedIn');
+                
+                if (currentUser && isLoggedIn !== 'true') {
+                    localStorage.removeItem('currentUser');
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('rememberMe');
+                    log('Cleaned up corrupted auth data', 'success');
+                }
+                
+                // Check if cartItems is corrupted
+                const cartItems = localStorage.getItem('cartItems');
+                if (cartItems) {
+                    try {
+                        JSON.parse(cartItems);
+                    } catch (e) {
+                        localStorage.removeItem('cartItems');
+                        log('Cleaned up corrupted cart data', 'success');
+                    }
+                }
+                
+                log('Data cleanup completed', 'success');
+                checkAuth();
+                checkCart();
+            } catch (e) {
+                log('Error during cleanup: ' + e.message, 'error');
+            }
+        }
+
+        function testFunctions() {
+            try {
+                log('Testing functions...');
+                
+                // Test getCurrentUser
+                if (typeof getCurrentUser === 'function') {
+                    const user = getCurrentUser();
+                    log('getCurrentUser() returned: ' + (user ? 'user object' : 'null'));
+                }
+                
+                // Test updateAuthUI
+                if (typeof updateAuthUI === 'function') {
+                    updateAuthUI();
+                    log('updateAuthUI() executed');
+                }
+                
+                // Test updateCartCount
+                if (typeof updateCartCount === 'function') {
+                    updateCartCount();
+                    log('updateCartCount() executed');
+                }
+                
+                log('Function tests completed', 'success');
+            } catch (e) {
+                log('Error testing functions: ' + e.message, 'error');
+            }
+        }
+
+        // Initialize debug panel
+        window.addEventListener('load', function() {
+            log('Debug panel loaded');
+            checkSystemStatus();
+            checkAuth();
+            checkCart();
+        });
+    </script>
+</body>
+</html> 

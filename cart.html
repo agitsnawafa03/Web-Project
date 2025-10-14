@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keranjang Belanja - Mochi Sehat</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/cart.css" rel="stylesheet" type="text/css" />
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <a href="index.html" class="navbar-logo">Mochi<span>Kita</span></a>
+
+      <div class="navbar-nav">
+        <a href="index.html#home">Home</a>
+        <a href="index.html#about">Tentang Kami</a>
+        <a href="index.html#menu">Menu</a>
+        <a href="index.html#contact">Kontak</a>
+      </div>
+
+      <div class="navbar-extra">
+        <a href="#" id="search"><i data-feather="search"></i></a>
+        <a href="cart.html" id="shopping-cart" class="active">
+          <i data-feather="shopping-cart"></i>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <a href="#" id="user-menu" style="display: none;">
+          <i data-feather="user"></i>
+        </a>
+        <a href="login.html" id="login-btn">
+          <i data-feather="log-in"></i>
+          Login
+        </a>
+        <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
+      </div>
+    </nav>
+
+    <!-- Search Form -->
+    <div class="search-form">
+      <input type="search" id="search-box" placeholder="cari menu...">
+    </div>
+
+    <!-- Cart Section -->
+    <section class="cart-section">
+      <div class="container">
+        <h1 class="cart-title">🛒 Keranjang Belanja</h1>
+        
+        <div class="cart-content">
+          <div class="cart-items" id="cartItems">
+            <!-- Cart items will be loaded here -->
+          </div>
+          
+          <div class="cart-summary">
+            <div class="summary-card">
+              <h3>Ringkasan Pesanan</h3>
+              <div class="summary-item">
+                <span>Total Item:</span>
+                <span id="totalItems">0</span>
+              </div>
+              <div class="summary-item">
+                <span>Subtotal:</span>
+                <span id="subtotal">IDR 0</span>
+              </div>
+              <div class="summary-item">
+                <span>Ongkos Kirim:</span>
+                <span id="shipping">IDR 5K</span>
+              </div>
+              <hr>
+              <div class="summary-item total">
+                <span>Total:</span>
+                <span id="totalPrice">IDR 0</span>
+              </div>
+              
+              <button class="checkout-btn" id="checkoutBtn">
+                <i data-feather="credit-card"></i>
+                Checkout Sekarang
+              </button>
+              
+              <button class="continue-shopping" onclick="window.location.href='index.html#menu'">
+                <i data-feather="arrow-left"></i>
+                Lanjutkan Belanja
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="empty-cart" id="emptyCart" style="display: none;">
+          <div class="empty-cart-content">
+            <i data-feather="shopping-bag"></i>
+            <h2>Keranjang Belanja Kosong</h2>
+            <p>Belum ada item di keranjang belanja Anda</p>
+            <button class="btn-primary" onclick="window.location.href='index.html#menu'">
+              Mulai Belanja
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="socials">
+        <a href="#"><i data-feather="instagram"></i></a>
+        <a href="#"><i data-feather="twitter"></i></a>
+        <a href="#"><i data-feather="facebook"></i></a>
+      </div>
+
+      <div class="links">
+        <a href="index.html#home">Home</a>
+        <a href="index.html#about">Tentang Kami</a>
+        <a href="index.html#menu">Menu</a>
+        <a href="index.html#contact">Kontak</a>
+      </div>
+
+      <div class="credit">
+        <p>Created by <a href="">nana</a> | &copy; 2023</p>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+      feather.replace();
+    </script>
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+  </body>
+</html> 
