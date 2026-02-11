@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker Image
-        run: docker build -t web-mochi .
-     - name: Build Docker image
+      - name: Build Docker image
         run: docker build -t web-project .
+
+                                                
